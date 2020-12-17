@@ -1613,12 +1613,20 @@ namespace StackExchange.Redis.CosmosDB
 
         public long StringAppend(RedisKey key, RedisValue value, CommandFlags flags = CommandFlags.None)
         {
-            throw new NotImplementedException();
+            return StringAppendAsync(key, value, flags).Result;
         }
 
-        public Task<long> StringAppendAsync(RedisKey key, RedisValue value, CommandFlags flags = CommandFlags.None)
+        public async Task<long> StringAppendAsync(RedisKey key, RedisValue value, CommandFlags flags = CommandFlags.None)
         {
-            throw new NotImplementedException();
+            var storedProcedureExecuteResponse = await _container.Scripts.ExecuteStoredProcedureAsync<SprocResponse>("runStringCommand", new PartitionKey(key), new dynamic[] { "APPEND", new { key = (string)key, val = (string)value } });
+            if (storedProcedureExecuteResponse.Resource.Success)
+            {
+                return (long)storedProcedureExecuteResponse.Resource.Result;
+            }
+            else
+            {
+                throw new RedisServerException(storedProcedureExecuteResponse.Resource.ErrorMessage);
+            }
         }
 
         public long StringBitCount(RedisKey key, long start = 0, long end = -1, CommandFlags flags = CommandFlags.None)

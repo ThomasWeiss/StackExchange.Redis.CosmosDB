@@ -17,6 +17,9 @@
         case 'GETSET':
             runGetSet(args);
             break;
+        case 'APPEND':
+            runAppend(args);
+            break;
         default:
             response.setBody({ success: false, errorMessage: `Unsupported command: ${command}` });
     }
@@ -87,6 +90,33 @@
                         function (err) {
                             if (err) throw err;
                             response.setBody({ success: true, result: currentVal });
+                        });
+                }
+            });
+    }
+
+    function runAppend(args) {
+        collection.readDocument(
+            `${collection.getAltLink()}/docs/${args.key}`,
+            function (err, doc) {
+                if (err) {
+                    if (err.number == 404) {
+                        collection.createDocument(
+                            collection.getSelfLink(),
+                            { id: args.key, type: 'string', val: args.val },
+                            function (err) {
+                                if (err) throw err;
+                                response.setBody({ success: true, result: args.val.length });
+                            });
+                    } else { throw err; }
+                } else {
+                    doc.val += args.val;
+                    collection.replaceDocument(
+                        doc._self,
+                        doc,
+                        function (err) {
+                            if (err) throw err;
+                            response.setBody({ success: true, result: doc.val.length });
                         });
                 }
             });

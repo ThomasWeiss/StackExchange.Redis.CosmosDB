@@ -200,6 +200,36 @@ namespace StackExchange.Redis.CosmosDB.Tests
             Assert.AreEqual(value.Substring(10, 11), (string)getRangeResult);
         }
 
+        [TestMethod]
+        public async Task StringAppend_appends_string()
+        {
+            var key = Guid.NewGuid().ToString();
+            var value1 = Guid.NewGuid().ToString();
+            await _database.StringSetAsync(key, value1);
+            var value2 = Guid.NewGuid().ToString();
+            var appendResult = await _database.StringAppendAsync(key, value2);
+
+            Assert.AreEqual(value1.Length + value2.Length, appendResult);
+
+            var getResult = await _database.StringGetAsync(key);
+
+            Assert.AreEqual(value1 + value2, (string)getResult);
+        }
+
+        [TestMethod]
+        public async Task StringAppend_creates_key_if_it_does_not_exist()
+        {
+            var key = Guid.NewGuid().ToString();
+            var value = Guid.NewGuid().ToString();
+            var appendResult = await _database.StringAppendAsync(key, value);
+
+            Assert.AreEqual(value.Length, appendResult);
+
+            var getResult = await _database.StringGetAsync(key);
+
+            Assert.AreEqual(value, (string)getResult);
+        }
+
         private static IDatabase _database;
     }
 }
