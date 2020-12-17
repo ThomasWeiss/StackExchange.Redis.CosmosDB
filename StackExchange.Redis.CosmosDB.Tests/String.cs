@@ -189,6 +189,17 @@ namespace StackExchange.Redis.CosmosDB.Tests
             Assert.AreEqual(null, (string)getSetResult);
         }
 
+        [TestMethod]
+        public async Task StringGetRange_returns_string_range()
+        {
+            var key = Guid.NewGuid().ToString();
+            var value = Guid.NewGuid().ToString();
+            await _database.StringSetAsync(key, value);
+            var getRangeResult = await _database.StringGetRangeAsync(key, 10, 20);
+
+            Assert.AreEqual(value.Substring(10, 11), (string)getRangeResult);
+        }
+
         private static IDatabase _database;
     }
 }

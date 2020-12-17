@@ -1663,12 +1663,12 @@ namespace StackExchange.Redis.CosmosDB
 
         public long StringDecrement(RedisKey key, long value = 1, CommandFlags flags = CommandFlags.None)
         {
-            throw new NotImplementedException();
+            return StringDecrementAsync(key, value, flags).Result;
         }
 
         public double StringDecrement(RedisKey key, double value, CommandFlags flags = CommandFlags.None)
         {
-            throw new NotImplementedException();
+            return StringDecrementAsync(key, value, flags).Result;
         }
 
         public async Task<long> StringDecrementAsync(RedisKey key, long value = 1, CommandFlags flags = CommandFlags.None)
@@ -1699,17 +1699,17 @@ namespace StackExchange.Redis.CosmosDB
 
         public RedisValue StringGet(RedisKey key, CommandFlags flags = CommandFlags.None)
         {
-            throw new NotImplementedException();
+            return StringGetAsync(key, flags).Result;
         }
 
         public RedisValue[] StringGet(RedisKey[] keys, CommandFlags flags = CommandFlags.None)
         {
-            throw new NotImplementedException();
+            return StringGetAsync(keys, flags).Result;
         }
 
         public async Task<RedisValue> StringGetAsync(RedisKey key, CommandFlags flags = CommandFlags.None)
         {
-            var itemResponse = await _container.ReadItemAsync<DataModel>((string)key, new PartitionKey((string)key));
+            var itemResponse = await _container.ReadItemAsync<DataModel>(key, new PartitionKey(key));
             return (string)itemResponse.Resource.Value;
         }
 
@@ -1718,7 +1718,7 @@ namespace StackExchange.Redis.CosmosDB
             var tasks = new List<Task<ItemResponse<DataModel>>>(keys.Length);
             foreach (var key in keys)
             {
-                tasks.Add(_container.ReadItemAsync<DataModel>((string)key, new PartitionKey((string)key)));
+                tasks.Add(_container.ReadItemAsync<DataModel>(key, new PartitionKey(key)));
             }
             await Task.WhenAll(tasks);
 
@@ -1747,18 +1747,18 @@ namespace StackExchange.Redis.CosmosDB
 
         public RedisValue StringGetRange(RedisKey key, long start, long end, CommandFlags flags = CommandFlags.None)
         {
-            throw new NotImplementedException();
+            return StringGetRangeAsync(key, start, end, flags).Result;
         }
 
         public async Task<RedisValue> StringGetRangeAsync(RedisKey key, long start, long end, CommandFlags flags = CommandFlags.None)
         {
-            var itemResponse = await _container.ReadItemAsync<DataModel>((string)key, new PartitionKey((string)key));
-            return ((string)itemResponse.Resource.Value).Substring((int)start, (int)(end - start));
+            var itemResponse = await _container.ReadItemAsync<DataModel>(key, new PartitionKey(key));
+            return ((string)itemResponse.Resource.Value).Substring((int)start, (int)(end - start + 1));
         }
 
         public RedisValue StringGetSet(RedisKey key, RedisValue value, CommandFlags flags = CommandFlags.None)
         {
-            throw new NotImplementedException();
+            return StringGetSetAsync(key, value, flags).Result;
         }
 
         public async Task<RedisValue> StringGetSetAsync(RedisKey key, RedisValue value, CommandFlags flags = CommandFlags.None)
@@ -1786,12 +1786,12 @@ namespace StackExchange.Redis.CosmosDB
 
         public long StringIncrement(RedisKey key, long value = 1, CommandFlags flags = CommandFlags.None)
         {
-            throw new NotImplementedException();
+            return StringIncrementAsync(key, value, flags).Result;
         }
 
         public double StringIncrement(RedisKey key, double value, CommandFlags flags = CommandFlags.None)
         {
-            throw new NotImplementedException();
+            return StringIncrementAsync(key, value, flags).Result;
         }
 
         public async Task<long> StringIncrementAsync(RedisKey key, long value = 1, CommandFlags flags = CommandFlags.None)
