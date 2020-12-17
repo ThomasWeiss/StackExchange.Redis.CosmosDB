@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30002.166
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StackExchange.Redis.CosmosDB", "StackExchange.Redis.CosmosDB\StackExchange.Redis.CosmosDB.csproj", "{C865B9E3-E6E3-494D-AD13-115917CEE738}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StackExchange.Redis.CosmosDB.Demo", "StackExchange.Redis.CosmosDB.Demo\StackExchange.Redis.CosmosDB.Demo.csproj", "{30777576-460F-4B59-9F53-22C0DDE49D96}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StackExchange.Redis.CosmosDB.Tests", "StackExchange.Redis.CosmosDB.Tests\StackExchange.Redis.CosmosDB.Tests.csproj", "{1E0616C9-29F4-495B-AB01-9A4B8C39869B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C865B9E3-E6E3-494D-AD13-115917CEE738}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C865B9E3-E6E3-494D-AD13-115917CEE738}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C865B9E3-E6E3-494D-AD13-115917CEE738}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C865B9E3-E6E3-494D-AD13-115917CEE738}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30777576-460F-4B59-9F53-22C0DDE49D96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30777576-460F-4B59-9F53-22C0DDE49D96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30777576-460F-4B59-9F53-22C0DDE49D96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30777576-460F-4B59-9F53-22C0DDE49D96}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E0616C9-29F4-495B-AB01-9A4B8C39869B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E0616C9-29F4-495B-AB01-9A4B8C39869B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E0616C9-29F4-495B-AB01-9A4B8C39869B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E0616C9-29F4-495B-AB01-9A4B8C39869B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9E9AE966-72C8-4A61-B12A-04D77F9B8430}
+	EndGlobalSection
+EndGlobal
