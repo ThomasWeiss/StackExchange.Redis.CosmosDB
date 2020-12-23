@@ -12,14 +12,13 @@
         case 'INCRBYFLOAT':
         case 'DECR':
         case 'DECRBYFLOAT':
-            runIncrDecr(command, args);
-            break;
+            runIncrDecr(command, args); break;
         case 'GETSET':
-            runGetSet(args);
-            break;
+            runGetSet(args); break;
         case 'APPEND':
-            runAppend(args);
-            break;
+            runAppend(args); break;
+        case 'SETRANGE':
+            runSetRange(args); break;
         default:
             response.setBody({ success: false, errorMessage: `Unsupported command: ${command}` });
     }
@@ -120,7 +119,38 @@
                         });
                 }
             });
-    }
+        }
+
+    function runSetRange(args) {
+        collection.readDocument(
+            `${collection.getAltLink()}/docs/${args.key}`,
+            function (err, doc) {
+                if (err) {
+                    if (err.number == 404) {
+                        var newval = new Array(args.offset + 1).join(String.fromCharCode(0)) + args.val;
+                        collection.createDocument(
+                            collection.getSelfLink(),
+                            { id: args.key, type: 'string', val: newval },
+                            function (err) {
+                                if (err) throw err;
+                                response.setBody({ success: true, result: newval.length });
+                            });
+                    } else { throw err; }
+                } else {
+                    if (args.offset + args.val.length > doc.val.length) {
+                        doc.val += new Array(args.offset - doc.val.length + 1).join(String.fromCharCode(0))
+                    }
+                    doc.val = doc.val.substr(0, args.offset) + args.val + doc.val.substr(args.offset + args.val.length);
+                    collection.replaceDocument(
+                        doc._self,
+                        doc,
+                        function (err) {
+                            if (err) throw err;
+                            response.setBody({ success: true, result: doc.val.length });
+                        });
+                }
+            });
+        }
 
     function isNumber(v) { return typeof v === 'number' && isFinite(v); }
 }";

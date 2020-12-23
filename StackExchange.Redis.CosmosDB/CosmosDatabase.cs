@@ -1936,12 +1936,20 @@ namespace StackExchange.Redis.CosmosDB
 
         public RedisValue StringSetRange(RedisKey key, long offset, RedisValue value, CommandFlags flags = CommandFlags.None)
         {
-            throw new NotImplementedException();
+            return StringSetRangeAsync(key, offset, value, flags).Result;
         }
 
-        public Task<RedisValue> StringSetRangeAsync(RedisKey key, long offset, RedisValue value, CommandFlags flags = CommandFlags.None)
+        public async Task<RedisValue> StringSetRangeAsync(RedisKey key, long offset, RedisValue value, CommandFlags flags = CommandFlags.None)
         {
-            throw new NotImplementedException();
+            var storedProcedureExecuteResponse = await _container.Scripts.ExecuteStoredProcedureAsync<SprocResponse>("runStringCommand", new PartitionKey(key), new dynamic[] { "SETRANGE", new { key = (string)key, val = (string)value, offset = offset } });
+            if (storedProcedureExecuteResponse.Resource.Success)
+            {
+                return (long)storedProcedureExecuteResponse.Resource.Result;
+            }
+            else
+            {
+                throw new RedisServerException(storedProcedureExecuteResponse.Resource.ErrorMessage);
+            }
         }
 
         public bool TryWait(Task task)

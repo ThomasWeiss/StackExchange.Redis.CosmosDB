@@ -12,7 +12,7 @@ namespace StackExchange.Redis.CosmosDB.Tests
         {
             //var redis = ConnectionMultiplexer.Connect("localhost");
             var redis = CosmosConnectionMultiplexer.Connect("AccountEndpoint=https://localhost:8081/;AccountKey=C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==");
-            await redis.CreateDatabaseIfNotExistsAsync();
+            //await redis.CreateDatabaseIfNotExistsAsync();
             _database = redis.GetDatabase();
         }
 
@@ -228,6 +228,52 @@ namespace StackExchange.Redis.CosmosDB.Tests
             var getResult = await _database.StringGetAsync(key);
 
             Assert.AreEqual(value, (string)getResult);
+        }
+
+        [TestMethod]
+        public async Task StringSetRange_inserts_string()
+        {
+            var key = Guid.NewGuid().ToString();
+            var value1 = Guid.NewGuid().ToString();
+            await _database.StringSetAsync(key, value1);
+            var value2 = Guid.NewGuid().ToString().Substring(0, 4);
+            var setRangeResult = await _database.StringSetRangeAsync(key, 8, value2);
+
+            Assert.AreEqual(value1.Length, setRangeResult);
+
+            var getResult = await _database.StringGetAsync(key);
+
+            Assert.AreEqual(value1.Substring(0, 8) + value2 + value1.Substring(12), (string)getResult);
+        }
+
+        [TestMethod]
+        public async Task StringSetRange_pads_if_string_is_shorter()
+        {
+            var key = Guid.NewGuid().ToString();
+            var value1 = Guid.NewGuid().ToString().Substring(0, 6);
+            await _database.StringSetAsync(key, value1);
+            var value2 = Guid.NewGuid().ToString().Substring(0, 4);
+            var setRangeResult = await _database.StringSetRangeAsync(key, value1.Length + 2, value2);
+
+            Assert.AreEqual(value1.Length + 2 + value2.Length, setRangeResult);
+
+            var getResult = await _database.StringGetAsync(key);
+
+            Assert.AreEqual(value1 + new string(char.ConvertFromUtf32(0)[0], 2) + value2, (string)getResult);
+        }
+
+        [TestMethod]
+        public async Task StringSetRange_creates_and_pads_string_if_key_does_not_exist()
+        {
+            var key = Guid.NewGuid().ToString();
+            var value = Guid.NewGuid().ToString().Substring(0, 4);
+            var setRangeResult = await _database.StringSetRangeAsync(key, 4, value);
+
+            Assert.AreEqual(4 + value.Length, setRangeResult);
+
+            var getResult = await _database.StringGetAsync(key);
+
+            Assert.AreEqual(new string(char.ConvertFromUtf32(0)[0], 4) + value, (string)getResult);
         }
 
         private static IDatabase _database;
